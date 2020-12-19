@@ -18,7 +18,7 @@ function getActivityHeader() {
         } else {
           search();
         }
-      }, 2000);
+      }, 500);
     }
     search();
   })
@@ -29,6 +29,7 @@ function getActivityHeader() {
  * @param {string} keyword 
  */
 function filterActivityFrom(keyword) {
+  console.log('haha')
   let username = keyword;
   let hideMode = false;
   if (keyword.startsWith('!')) {
@@ -46,7 +47,7 @@ function filterActivityFrom(keyword) {
       ? hideMode ? matched : !matched
       : false;
     if (needHide) {
-      elem.style.display = 'none!important';
+      elem.style.display = 'none';
     } else {
       elem.style.display = 'block';
     }
@@ -84,6 +85,10 @@ async function getPushContainer() {
  * 
  */
 async function initActivityFilter() {
+  const oldInput = document.getElementById('activity-filter-input');
+  if (oldInput) {
+    return;
+  }
   const activityHeader = await getActivityHeader();
   const pushContainer = await getPushContainer();
   const nextElem = activityHeader.nextElementSibling;
@@ -95,6 +100,7 @@ async function initActivityFilter() {
   span.style.padding = '3px 0 0 0'
   span.innerText = 'Filter: ';
   const input = document.createElement('input');
+  input.setAttribute('id', 'activity-filter-input')
   input.value = '!renovate';
   input.style.outline = 'none';
   input.style.width = '300px';

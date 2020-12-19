@@ -18,7 +18,7 @@ function getCommitHeader() {
         } else {
           search();
         }
-      }, 2000);
+      }, 500);
     }
     search();
   })
@@ -49,36 +49,12 @@ function filterCommitFrom(keyword) {
     if (needHide) {
       elem.style.height = '0';
       elem.style.visibility = 'hidden'
+      elem.style.padding = 0;
     } else {
-      elem.style.height = 'initial';
-      elem.style.visibility = 'initial';
+      elem.style.height = '';
+      elem.style.visibility = '';
+      elem.style.padding = '';
     }
-  })
-}
-
-/**
- * @returns {Promise<HTMLElement>}
- */
-async function getCommitContainer() {
-  let delay = 0;
-  return new Promise(resolve => {
-    let searchedTimes = 0;
-    const search = () => {
-      setTimeout(() => {
-        if (searchedTimes >= 20) {
-          return;
-        }
-        searchedTimes += 1;
-        const container = document.querySelector('.repository-content .js-navigation-container');
-        if (container) {
-          resolve(container);
-        } else {
-          delay = 2000;
-          search();
-        }
-      }, delay);
-    }
-    search();
   })
 }
 
@@ -87,9 +63,11 @@ async function getCommitContainer() {
  * 
  */
 async function initCommitFilter() {
-  console.log('fasdfasdf')
+  const oldInput = document.getElementById('commit-filter-input');
+  if (oldInput) {
+    return;
+  }
   const commitHeader = await getCommitHeader();
-  const commitContainer = await getCommitContainer();
   const nextElem = commitHeader.nextElementSibling;
   const headParent = commitHeader.parentElement;
   const filterDiv = document.createElement('div');
@@ -99,6 +77,7 @@ async function initCommitFilter() {
   span.style.padding = '3px 0 0 0'
   span.innerText = 'Filter: ';
   const input = document.createElement('input');
+  input.setAttribute('id', 'commit-filter-input')
   input.value = '!renovate';
   input.style.outline = 'none';
   input.style.width = '300px';
@@ -109,12 +88,6 @@ async function initCommitFilter() {
   input.addEventListener('change', () => {
     filterCommitFrom(input.value);
   });
-  const observer = new MutationObserver(() => {
-    setTimeout(() => {
-      filterCommitFrom(input.value);
-    }, 250);
-  });
-  observer.observe(commitContainer, { childList: true });
   filterCommitFrom(input.value);
 }
 export default initCommitFilter;
