@@ -14,6 +14,7 @@
   ],
   "web_accessible_resources": [
     "main.js",
-    "activity/index.js"
+    "activity/index.js",
+    "commit/index.js"
  ]
 }
